@@ -1,0 +1,168 @@
+import 'package:flutter/material.dart';
+void main() {
+  runApp(const MyApp());
+}
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xFFFFF1F2), // soft pink
+        fontFamily: 'Roboto',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFF472B6),
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          elevation: 4,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          hintStyle: const TextStyle(color: Colors.grey),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFA855F7),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
+          ),
+        ),
+      ),
+      home: const LoginPage(),
+    );
+  }
+}
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController user = TextEditingController();
+  final TextEditingController pass = TextEditingController();
+  bool remember = false;
+  void login() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          user.text == "bomma" && pass.text == "1234"
+              ? "✨ Welcome Senpai!"
+              : "❌ Wrong ID, try again!",
+        ),
+        backgroundColor:
+            user.text == "bomma" && pass.text == "1234"
+                ? Colors.green
+                : Colors.redAccent,
+      ),
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Anime Login")),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(25),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFFFBCFE8),
+                  Color(0xFFE9D5FF),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(30),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.pinkAccent,
+                  blurRadius: 18,
+                  offset: Offset(0, 10),
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                               const CircleAvatar(
+                  radius: 45,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.face_retouching_natural,
+                    size: 55,
+                    color: Color(0xFFF472B6),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                const Text(
+                  "Konnichiwa 👋",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF701A75),
+                  ),
+                ),
+               const SizedBox(height: 25),
+                TextField(
+                  controller: user,
+                  decoration: const InputDecoration(
+                    hintText: "Username",
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                TextField(
+                  controller: pass,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: "Password",
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: remember,
+                      activeColor: Color(0xFFA855F7),
+                      onChanged: (v) => setState(() => remember = v!),
+                    ),
+                    const Text(
+                      "Remember me 💖",
+                      style: TextStyle(color: Color(0xFF701A75)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: login,
+                    child: const Text("LOGIN"),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "Made with 🌸 Anime Vibes",
+                  style: TextStyle(color: Color(0xFF701A75)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
