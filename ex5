@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const ConfirmationApp());
+}
+
+class ConfirmationApp extends StatelessWidget {
+  const ConfirmationApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.indigo, useMaterial3: true),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  // Function to show the AlertDialog
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // User must tap a button
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text(
+            'Are you sure you want to delete this item? This action cannot be undone.',
+          ),
+          actions: <Widget>[
+            // Cancel Button
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _showSnackBar(context, 'Action Cancelled', isError: true);
+              },
+              child: const Text('Cancel'),
+            ),
+            // Confirm Button
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _showSnackBar(context, 'Item successfully deleted!');
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Function to show the SnackBar
+  void _showSnackBar(BuildContext context, String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).clearSnackBars(); // Prevent stacking
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.redAccent : Colors.green,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'Dismiss',
+          textColor: Colors.white,
+          onPressed: () {},
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Critical Actions App')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.delete_forever, size: 80, color: Colors.grey),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: () => _showDeleteConfirmation(context),
+              icon: const Icon(Icons.delete),
+              label: const Text('Delete Sensitive Data'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
