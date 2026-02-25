@@ -1,0 +1,130 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ShopPage(),
+    );
+  }
+}
+
+class ShopPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Lechuz Shop"),
+        backgroundColor:Colors.blue,
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+          // Item 1
+          ElevatedButton(
+            child: Text("Shoes"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(itemName: "Shoes"),
+                ),
+              );
+            },
+          ),
+
+          // Item 2
+          ElevatedButton(
+            child: Text("T-Shirt"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(itemName: "T-Shirt"),
+                ),
+              );
+            },
+          ),
+
+          // Item 3
+          ElevatedButton(
+            child: Text("Watch"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(itemName: "Watch"),
+                ),
+              );
+            },
+          ),
+
+          // Item 4
+          ElevatedButton(
+            child: Text("Bag"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(itemName: "Bag"),
+                ),
+              );
+            },
+          ),
+
+          // Item 5
+          ElevatedButton(
+            child: Text("Cap"),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CartPage(itemName: "Cap"),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CartPage extends StatelessWidget {
+  final String itemName;
+
+  CartPage({required this.itemName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cart Page"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "$itemName added successfully!",
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(height: 2),
+            ElevatedButton(
+              child: Text("Back"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
