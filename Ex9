@@ -1,0 +1,190 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Text to Speech App',
+      debugShowCheckedModeBanner: false,
+      // Updated Theme: Modern Dark Deep Purple
+      theme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorSchemeSeed: Colors.deepPurple,
+        scaffoldBackgroundColor: const Color(0xFF0F0E13),
+      ),
+      home: const TTSPage(),
+    );
+  }
+}
+
+class TTSPage extends StatefulWidget {
+  const TTSPage({super.key});
+
+  @override
+  _TTSPageState createState() => _TTSPageState();
+}
+
+class _TTSPageState extends State<TTSPage> {
+  final FlutterTts flutterTts = FlutterTts();
+  final TextEditingController controller = TextEditingController();
+  double speechRate = 0.5;
+  String selectedLanguage = "en-US";
+  String error = "";
+
+  final Map<String, String> languages = {
+    "English": "en-US",
+    "Hindi": "hi-IN",
+    "Spanish": "es-ES",
+    "French": "fr-FR"
+  };
+
+  Future speak() async {
+    String text = controller.text.trim();
+    if (text.isEmpty) {
+      setState(() => error = "Please enter text to speak.");
+      return;
+    }
+    setState(() => error = "");
+    await flutterTts.setLanguage(selectedLanguage);
+    await flutterTts.setSpeechRate(speechRate);
+    await flutterTts.speak(text);
+  }
+
+  Future stop() async {
+    await flutterTts.stop();
+  }
+
+  @override
+  void dispose() {
+    flutterTts.stop();
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Voice AI"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Styled Text Field
+            TextField(
+              controller: controller,
+              maxLines: 5,
+              style: const TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                labelText: "What should I say?",
+                hintText: "Type something here...",
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.05),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: const BorderSide(color: Colors.deepPurpleAccent),
+                ),
+              ),
+            ),
+            if (error.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(error, style: const TextStyle(color: Colors.redAccent)),
+              ),
+            const SizedBox(height: 30),
+
+            // Settings Card
+            Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.03),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Language Settings",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)),
+                  DropdownButton<String>(
+                    value: selectedLanguage,
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                    items: languages.entries.map((entry) {
+                      return DropdownMenuItem(
+                        value: entry.value,
+                        child: Text(entry.key),
+                      );
+                    }).toList(),
+                    onChanged: (value) => setState(() => selectedLanguage = value!),
+                  ),
+                  const Divider(color: Colors.white10),
+                  const SizedBox(height: 10),
+                  Text("Speed: ${speechRate.toStringAsFixed(2)}",
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Slider(
+                    min: 0.1,
+                    max: 1.0,
+                    activeColor: Colors.deepPurpleAccent,
+                    value: speechRate,
+                    onChanged: (value) => setState(() => speechRate = value),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 40),
+
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: speak,
+                    icon: const Icon(Icons.play_arrow),
+                    label: const Text("SPEAK"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.deepPurpleAccent,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: stop,
+                    icon: const Icon(Icons.stop),
+                    label: const Text("STOP"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      backgroundColor: Colors.redAccent.withOpacity(0.8),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
